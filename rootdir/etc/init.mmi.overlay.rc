@@ -1,0 +1,35 @@
+import init.mmi.dtv.rc
+on init
+   # Change ownership for for HBM feature
+   chown system system /sys/class/graphics/fb0/hbm
+   # Change ownership for for ACL feature
+   chown system system /sys/class/graphics/fb0/acl
+
+on boot
+
+    chown root mot_tcmd /sys/module/phy_msm_usb/parameters/host_mode_disable
+    chmod 0660 /sys/module/phy_msm_usb/parameters/host_mode_disable
+    chown root mot_tcmd /sys/devices/soc/7000000.ssusb/disable_id_pin
+    chmod 0220 /sys/devices/soc/7000000.ssusb/disable_id_pin
+
+    #change ownership and permission for LTR559
+    chown system system /sys/class/sensors/Rear\ Proximity\ sensor/enable
+    chown system system /sys/class/sensors/Rear\ Proximity\ sensor/poll_delay
+    chown system system /sys/class/sensors/Rear\ Proximity\ sensor/enable_wakeup
+    chmod 0660 /sys/class/sensors/Rear\ Proximity\ sensor/enable
+    chmod 0660 /sys/class/sensors/Rear\ Proximity\ sensor/poll_delay
+    chmod 0660 /sys/class/sensors/Rear\ Proximity\ sensor/enable_wakeup
+
+    # Change the ownership of display TE files for tcmds
+    chown root mot_tcmd /sys/class/graphics/fb0/te_test
+    chown root mot_tcmd /sys/class/graphics/fb0/te_enable
+    chown root mot_tcmd /sys/class/graphics/fb0/frame_counter
+
+on property:ro.hw.fps=true
+    enable fingerprintd
+
+service fingerprintd /system/bin/fingerprintd
+    class late_start
+    user system
+    group fingerp
+    disabled
